@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Venue</title>
+</head>
+<body>
+    <p>Create a new show</p>
+    <form action="/admin/{{show_id}}/update_show" method="POST" id="admin_update_show">
+        <div>
+            <label>Show Name:</label>
+            <input type="text" name="s_name" value="{{s_name}}" required disabled/>
+        </div>
+
+        <div>
+            <label>Rating:</label>
+            <input type="text" name="s_rating" required />
+        </div>
+
+        <div>
+            <label>Timing:</label>
+            <input type="text" name="s_timing" />
+        </div>
+
+        <div>
+            <label>Tags:</label>
+            <input type="text" name="s_tags"/>
+        </div>
+
+        <div>
+            <label>Price:</label>
+            <input type="number" name="s_price"/>
+        </div>
+        
+        <div>
+            <input type="submit" value = "Submit">
+        </div>
+    </form>            
+</body>
+</html>
+

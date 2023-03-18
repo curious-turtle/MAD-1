@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Booking</title>
+</head>
+<body>
+    <p>Booking for {{show}}</p>
+    <form action="/user/{{user_id}}/create_booking" method="POST" id="user-booking">
+        <div>
+            available seats: {{available_seats}}
+        </div>
+        
+        <div>
+            <label>Number:</label>
+            <input type="text" name="b_number" required />
+        </div>
+
+        <div>
+            <label>Price:</label>
+            <input type="text" name="b_price" value={{ticket_price}} disabled />
+        </div>
+        
+        <div>
+            <input type="submit" value = "Confirm Booking">
+        </div>
+    </form>            
+</body>
+</html>
+

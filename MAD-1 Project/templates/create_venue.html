@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Venue</title>
+</head>
+<body>
+    <p>Create new venue</p>
+    <form action="/admin/create_venue" method="POST" id="admin_create_venue">
+        <div>
+            <label>Venue Name:</label>
+            <input type="text" name="v_name" required />
+        </div>
+
+        <div>
+            <label>Place:</label>
+            <input type="text" name="v_place" required />
+        </div>
+
+        <div>
+            <label>Location:</label>
+            <input type="text" name="v_location" />
+        </div>
+
+        <div>
+            <label>Capacity:</label>
+            <input type="number" name="v_capacity" min="10" max="1000"/>
+        </div>
+        
+        <div>
+            <input type="submit" value = "Submit">
+        </div>
+    </form>            
+</body>
+</html>
+

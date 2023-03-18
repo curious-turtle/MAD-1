@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css' ) }}">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Ticket Show</title>
+    </head>
+
+    <body>
+        <header>Admin Login</header>
+        
+        <form action="/admin_login" method="post">
+            <div class="input_field">
+                <input type="email" name="email" required placeholder="Email">
+            </div>
+
+            <div class="input_field">
+                <input type="password" name="password" required placeholder="Password">
+            </div>
+            
+            <div class="field">
+                <input type="submit" value="LOGIN">
+            </div>
+
+            {{ placeholder}}
+        </form>
+    </body>
+</html>

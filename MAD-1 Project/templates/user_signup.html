@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css' ) }}">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Ticket Show</title>
+    </head>
+
+
+    <body>
+        <header>SignUp</header>
+
+        <form action="/user_signup" method="post">
+                
+                <div class="input_field">
+                    <input type="text" name="u_name" required placeholder="Full Name">
+                </div>
+
+                <div class="input_field">
+                    <input type="email" name="u_mail" required placeholder="Email">
+                </div>
+
+                <div class="input_field">
+                    <input type="password" name="u_password" required placeholder="Password">
+                </div>
+                
+                <br>
+                
+                <div class="field">
+                    <input type="submit" value="Create Account">
+                </div>
+        </form>
+
+        <br>
+
+        <div class="signup">
+            <p>Already have account?</p>
+            <a href="/user_login">Login Now</a>
+        </div>
+    </body>
+</html>

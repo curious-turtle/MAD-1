@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+</head>
+<body>
+
+    <div style="position: relative; width: 100%;">
+        <h1 style="position: absolute; left: 0; top: 0; margin: 0;">Venues</h1>
+    </div>
+
+    <br><br><br>
+    
+    {% if curr_admin_dash|length == 0 %}
+        <h4>No venue Found. Add venue now!</h4>
+    {% else %}
+        {% for venue in curr_admin_dash %}
+            <p>Venue Name: {{venue}}</p>
+            {% if curr_admin_dash[venue]|length == 0 %}
+                <h4>No Show Found. Add Show now!</h4>
+            {% else %}
+                <table>
+                    {% for show in curr_admin_dash[venue] %}
+                        <tr>
+                            <td>{{ show }}</td>
+                            <td><a href="/admin/{{show_name_id_pair[show]}}/update_show">Update Show</a></td>
+                            <td><a href="/admin/{{show_name_id_pair[show]}}/delete_show">Delete Show</a></td>
+                        </tr>
+                    {% endfor %}     
+                </table>
+            {% endif %}
+            <a href="/admin/{{venue_name_id_pair[venue]}}/add_show">Add Show</a>
+            <a href="/admin/{{venue_name_id_pair[venue]}}/update_venue">Update Venue</a>
+            <a href="/admin/{{venue_name_id_pair[venue]}}/delete_venue">Delete Venue</a>
+        {% endfor %}
+    {% endif %}
+    <div>
+        <a href="/admin/create_venue">Create Venue</a>
+    </div>
+</body>
+</html>
