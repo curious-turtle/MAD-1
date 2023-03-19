@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{user_name}}'s Dashboard</title>
+    <style>
+        table,th,tr,td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            text-align: center;
+        }    
+    </style>
+</head>
+<body>
+    <p>Booking for {{show_name}}</p>
+    <form action="/user/{{user_id}}/create_booking/{{venue_id}}/{{show_id}}" method="POST" id="user-booking">
+        <div>
+            available seats: {{available_seats}} <br>
+            Place: {{place}} <br>
+            location: {{location}} <br>
+            Timing: {{timing}} <br>
+        </div>
+        
+        <div>
+            <label>Number:</label>
+            <input type="text" name="b_number" required />
+        </div>
+
+        <div>
+            <label>Price:</label>
+            <input type="text" name="b_price" value={{ticket_price}} disabled />
+        </div>
+        
+        <br>
+
+        <div>
+            <input type="submit" value = "Confirm Booking">
+        </div>
+    </form>            
+</body>
+</html>

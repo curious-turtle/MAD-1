@@ -4,29 +4,30 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New Booking</title>
+    <title>{{user_name}}'s Bookings</title>
 </head>
 <body>
-    <p>Booking for {{show}}</p>
-    <form action="/user/{{user_id}}/create_booking" method="POST" id="user-booking">
-        <div>
-            available seats: {{available_seats}}
-        </div>
-        
-        <div>
-            <label>Number:</label>
-            <input type="text" name="b_number" required />
-        </div>
 
-        <div>
-            <label>Price:</label>
-            <input type="text" name="b_price" value={{ticket_price}} disabled />
-        </div>
-        
-        <div>
-            <input type="submit" value = "Confirm Booking">
-        </div>
-    </form>            
+    <div>
+        <h3>{{user_name}}'s Bookings</h3>
+    </div>
+
+    <br><br><br>
+    
+    {% if user_bookings_to_disp|length == 0 %}
+        <h4>No Bookings by you so far!</h4>
+    {% else %}
+        {% for booking in user_bookings_to_disp %}
+            <div>Show Name: {{booking[0]}}</div>
+            <p>Show Timing: {{booking[1]}}</p>
+            <p>Show Venue: {{booking[2]}}</p>
+            <p>Show Place: {{booking[3]}}</p>
+            <p>Show Location: {{booking[4]}}</p>
+            <br>
+        {% endfor %}
+    {% endif %}
+    <div>
+        <a href="/user_dashboard/{{user_id}}">Book Now</a>
+    </div>
 </body>
 </html>
-

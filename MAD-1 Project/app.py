@@ -8,7 +8,6 @@ db=SQLAlchemy()
 db.init_app(app)
 app.app_context().push()
 
-
 class Venue(db.Model):
     __tablename__='venue'
     venue_id=db.Column(db.Integer,autoincrement=True, primary_key=True)
@@ -44,8 +43,10 @@ class User(db.Model):
 class Bookings(db.Model):
     __tablename__='bookings'
     booking_id=db.Column(db.Integer, autoincrement=True, primary_key=True)
-    bshow_id=db.Column(db.Integer, db.ForeignKey("show.show_id"),nullable=False)
     buser_id=db.Column(db.Integer, db.ForeignKey("user.user_id"),nullable=False)
+    bvenue_id=db.Column(db.Integer, db.ForeignKey("venue.venue_id"),nullable=False)
+    bshow_id=db.Column(db.Integer, db.ForeignKey("show.show_id"),nullable=False)
+    
 
 @app.route("/", methods=["GET"])
 def index():
@@ -84,14 +85,82 @@ def user_signup():
 
 @app.route("/user_dashboard/<int:user_id>", methods=["GET"])
 def user_dashboard(user_id):
-    pass
+    curr_user_dash,show_details={},{}
+    venue_name_id_pair,show_name_id_pair={},{}
+    all_venues=Venue.query.all()
+    user_name=User.query.filter_by(user_id=user_id).first()
+    user_name=user_name.user_name
+    #print(user_name)
+    for venu in all_venues:
+        venue_id,v_name=venu.venue_id,venu.venue_name
+        venue_place,venue_location=venu.venue_place,venu.venue_location
+        #print(v_name)
+        venue_name_id_pair[v_name]=venue_id
+        if v_name not in curr_user_dash:
+                curr_user_dash[v_name]=[]
+        all_shows=Reservation.query.filter_by(rvenue_id=venue_id).all()
+        for show in all_shows:
+            show_id=show.rshow_id
+            s_name=Show.query.filter_by(show_id=show_id).first()
+            curr_user_dash[v_name].append(s_name.show_name)
+            show_name_id_pair[s_name.show_name]=show_id
+            if s_name.show_name not in show_details:
+                show_details[s_name.show_name]=[]
+            show_details[s_name.show_name].append([s_name.show_rating,s_name.show_timing,
+                                                   s_name.show_tags,s_name.show_ticket_price])
+    #print(curr_user_dash)
+    return render_template('user_dashboard.html',curr_user_dash=curr_user_dash,user_name=user_name,
+                           venue_place=venue_place,venue_location=venue_location,
+                           user_id=user_id,show_details=show_details,
+                           venue_name_id_pair=venue_name_id_pair,
+                           show_name_id_pair=show_name_id_pair)
 
-@app.route("/user/<int:user_id>/create_booking", methods=["GET","POST"])
-def create_booking():
+@app.route("/user/<int:user_id>/create_booking/<int:venue_id>/<int:show_id>", methods=["GET","POST"])
+def create_booking(user_id,venue_id,show_id):
     if request.method == 'GET':
-        return render_template('user_booking.html')
+        user_name=User.query.filter_by(user_id=user_id).first()
+        venue_to_disp=Venue.query.filter_by(venue_id=venue_id).first()
+        show_to_disp=Show.query.filter_by(show_id=show_id).first()
+        available_seats=venue_to_disp.venue_capacity
+        place=venue_to_disp.venue_place
+        location=venue_to_disp.venue_location
+        timing=show_to_disp.show_timing
+        ticket_price=show_to_disp.show_ticket_price
+        show_name=show_to_disp.show_name
+        user_name=user_name.user_name
+        return render_template('create_booking.html',user_name=user_name,show_name=show_name,
+                               available_seats=available_seats,place=place,
+                               location=location,timing=timing,ticket_price=ticket_price,
+                               venue_id=venue_id,show_id=show_id,user_id=user_id)
     if request.method == 'POST':
         b_number=request.form.get('b_number')
+        venue_to_update=Venue.query.filter_by(venue_id=venue_id).first()
+        venue_to_update.venue_capacity=venue_to_update.venue_capacity-int(b_number)
+        db.session.commit()
+        b1=Bookings(buser_id=user_id,bvenue_id=venue_id,bshow_id=show_id)
+        db.session.add(b1)
+        db.session.commit()
+        return redirect(f'/user_dashboard/{user_id}')
+
+@app.route("/user/<int:user_id>/user_bookings", methods=["GET"])
+def user_bookings(user_id):
+    user_name=User.query.filter_by(user_id=user_id).first()
+    user_name=user_name.user_name
+    user_bookings=Bookings.query.filter_by(buser_id=user_id).all()
+    user_bookings_to_disp=[]
+    for user_book in user_bookings:
+        venue_id=user_book.bvenue_id
+        show_id=user_book.bshow_id
+        show_name=(Show.query.filter_by(show_id=show_id).first()).show_name
+        show_timing=(Show.query.filter_by(show_id=show_id).first()).show_timing
+        show_venue_name=(Venue.query.filter_by(venue_id=venue_id).first()).venue_name
+        show_place=(Venue.query.filter_by(venue_id=venue_id).first()).venue_place
+        show_location=(Venue.query.filter_by(venue_id=venue_id).first()).venue_location
+        user_bookings_to_disp.append([show_name,show_timing,show_venue_name,show_place,show_location])
+    return render_template('user_booking.html',
+                               user_bookings_to_disp=user_bookings_to_disp,
+                               venue_id=venue_id,show_id=show_id,user_id=user_id,user_name=user_name)
+
 
 
 @app.route("/admin_login", methods=["GET","POST"])

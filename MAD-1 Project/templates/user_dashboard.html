@@ -4,29 +4,60 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
+    <title>{{user_name}}'s Dashboard</title>
+    <style>
+        table,th,tr,td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            text-align: center;
+        }    
+    </style>
 </head>
 <body>
 
     <div style="position: relative; width: 100%;">
-        <h1 style="position: absolute; left: 0; top: 0; margin: 0;">Venues</h1>
+        <h1 style="position: absolute; left: 0; top: 0; margin: 0;">Shows</h1>
     </div>
 
     <br><br><br>
     
-    {% if venues|length == 0 %}
-        <h4>No venue Found. Add venue now!</h4>
+    {% if curr_user_dash|length == 0 %}
+        <h4>No Show Found!!!</h4>
     {% else %}
-        {% for venue in venues %}
-            {{ venue }}        
-        {% endfor %}
-
-        {% for show in shows %}
-            {{ show }}        
+        {% for venue in curr_user_dash %}
+            <p>Venue Name: {{venue}}</p>
+            <p>Venue place: {{venue_place}}</p>
+            <p>Venue location: {{venue_location}}</p>
+            {% if curr_user_dash[venue]|length == 0 %}
+                <h4>No Show Found!!!</h4>
+            {% else %}
+                <table id="show-bookings">
+                        <tr>
+                            <th>Show Name</th>
+                            <th>Show Rating</th>
+                            <th>Show Timing</th>
+                            <th>Show Tags</th>
+                            <th>Ticket Price</th>
+                            <th>Book Now</th>
+                        </tr>
+                    {% for show in curr_user_dash[venue] %}
+                        {% for sd in show_details[show] %}
+                            <tr>
+                                <td>{{ show }}</td>
+                                <td>{{ sd[0] }}</td>
+                                <td>{{ sd[1] }}</td>
+                                <td>{{ sd[2] }}</td>
+                                <td>{{ sd[3] }}</td>
+                                <td><a href="/user/{{user_id}}/create_booking/{{venue_name_id_pair[venue]}}/{{show_name_id_pair[show]}}">Create Booking</a></td>
+                            </tr>
+                        {% endfor %}
+                    {% endfor %}     
+                </table>
+            {% endif %}
         {% endfor %}
     {% endif %}
     <div>
-        <a href="/user/{{user_id}}/create_booking">Book</a>
+        <a href="/user/{{user_id}}/user_bookings">User Bookings</a>
     </div>
 </body>
 </html>
