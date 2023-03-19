@@ -12,8 +12,8 @@ class Venue(db.Model):
     __tablename__='venue'
     venue_id=db.Column(db.Integer,autoincrement=True, primary_key=True)
     venue_name=db.Column(db.String,nullable=False)
-    venue_place=db.Column(db.String,nullable=False)
-    venue_location=db.Column(db.String,nullable=False)
+    venue_address=db.Column(db.String,nullable=False)
+    venue_city=db.Column(db.String,nullable=False)
     venue_capacity=db.Column(db.Integer,nullable=False)
     venue_show_relationship=db.relationship("Show",secondary="reservation")
 
@@ -25,6 +25,8 @@ class Show(db.Model):
     show_timing=db.Column(db.String)
     show_tags=db.Column(db.String)
     show_ticket_price=db.Column(db.Integer)
+    show_tickets_sold=db.Column(db.Integer)
+    show_collection=db.Column(db.Integer)
     show_bookings=db.relationship("User",secondary="bookings")    #define this relation with venue also see some yt video for ref
 
 class Reservation(db.Model):
@@ -93,7 +95,7 @@ def user_dashboard(user_id):
     #print(user_name)
     for venu in all_venues:
         venue_id,v_name=venu.venue_id,venu.venue_name
-        venue_place,venue_location=venu.venue_place,venu.venue_location
+        venue_address,venue_city=venu.venue_address,venu.venue_city
         #print(v_name)
         venue_name_id_pair[v_name]=venue_id
         if v_name not in curr_user_dash:
@@ -110,7 +112,7 @@ def user_dashboard(user_id):
                                                    s_name.show_tags,s_name.show_ticket_price])
     #print(curr_user_dash)
     return render_template('user_dashboard.html',curr_user_dash=curr_user_dash,user_name=user_name,
-                           venue_place=venue_place,venue_location=venue_location,
+                           venue_address=venue_address,venue_city=venue_city,
                            user_id=user_id,show_details=show_details,
                            venue_name_id_pair=venue_name_id_pair,
                            show_name_id_pair=show_name_id_pair)
@@ -122,15 +124,15 @@ def create_booking(user_id,venue_id,show_id):
         venue_to_disp=Venue.query.filter_by(venue_id=venue_id).first()
         show_to_disp=Show.query.filter_by(show_id=show_id).first()
         available_seats=venue_to_disp.venue_capacity
-        place=venue_to_disp.venue_place
-        location=venue_to_disp.venue_location
+        address=venue_to_disp.venue_address
+        city=venue_to_disp.venue_city
         timing=show_to_disp.show_timing
         ticket_price=show_to_disp.show_ticket_price
         show_name=show_to_disp.show_name
         user_name=user_name.user_name
         return render_template('create_booking.html',user_name=user_name,show_name=show_name,
-                               available_seats=available_seats,place=place,
-                               location=location,timing=timing,ticket_price=ticket_price,
+                               available_seats=available_seats,address=address,
+                               city=city,timing=timing,ticket_price=ticket_price,
                                venue_id=venue_id,show_id=show_id,user_id=user_id)
     if request.method == 'POST':
         b_number=request.form.get('b_number')
@@ -154,9 +156,9 @@ def user_bookings(user_id):
         show_name=(Show.query.filter_by(show_id=show_id).first()).show_name
         show_timing=(Show.query.filter_by(show_id=show_id).first()).show_timing
         show_venue_name=(Venue.query.filter_by(venue_id=venue_id).first()).venue_name
-        show_place=(Venue.query.filter_by(venue_id=venue_id).first()).venue_place
-        show_location=(Venue.query.filter_by(venue_id=venue_id).first()).venue_location
-        user_bookings_to_disp.append([show_name,show_timing,show_venue_name,show_place,show_location])
+        show_address=(Venue.query.filter_by(venue_id=venue_id).first()).venue_address
+        show_city=(Venue.query.filter_by(venue_id=venue_id).first()).venue_city
+        user_bookings_to_disp.append([show_name,show_timing,show_venue_name,show_address,show_city])
     return render_template('user_booking.html',
                                user_bookings_to_disp=user_bookings_to_disp,
                                venue_id=venue_id,show_id=show_id,user_id=user_id,user_name=user_name)
@@ -204,11 +206,11 @@ def admin_create_venue():
         return render_template('create_venue.html')
     if request.method == 'POST':
         v_name=request.form.get('v_name')
-        v_place=request.form.get('v_place')
-        v_location=request.form.get('v_location')
+        v_address=request.form.get('v_address')
+        v_city=request.form.get('v_city')
         v_capacity=request.form.get('v_capacity')
-        s1 = Venue(venue_name=v_name,venue_place=v_place,
-                   venue_location=v_location,venue_capacity=v_capacity)
+        s1 = Venue(venue_name=v_name,venue_address=v_address,
+                   venue_city=v_city,venue_capacity=v_capacity)
         db.session.add(s1)
         try:
             db.session.commit()
@@ -223,8 +225,8 @@ def admin_update_venue(venue_id):
         venue_to_update=Venue.query.filter_by(venue_id=venue_id).first()
         return render_template('update_venue.html',
                                v_name=venue_to_update.venue_name,
-                               v_place=venue_to_update.venue_place,
-                               v_location=venue_to_update.venue_location,
+                               v_address=venue_to_update.venue_address,
+                               v_city=venue_to_update.venue_city,
                                venue_id=venue_id)
     if request.method == 'POST':
         venue_to_update=Venue.query.filter_by(venue_id=venue_id).first()
@@ -263,7 +265,7 @@ def admin_add_show(venue_id):
             db.session.rollback()
             return "something went wrong while creating show"
         last_show_id=Show.query.filter_by(show_id=s1.show_id).first()
-        print(venue_id,last_show_id)
+        #print(venue_id,last_show_id)
         r1=Reservation(rvenue_id=venue_id,rshow_id=last_show_id.show_id)
         db.session.add(r1)
         try:

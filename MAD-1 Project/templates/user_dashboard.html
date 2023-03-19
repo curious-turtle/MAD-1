@@ -26,8 +26,8 @@
     {% else %}
         {% for venue in curr_user_dash %}
             <p>Venue Name: {{venue}}</p>
-            <p>Venue place: {{venue_place}}</p>
-            <p>Venue location: {{venue_location}}</p>
+            <p>Venue Address: {{venue_address}}</p>
+            <p>Venue City: {{venue_city}}</p>
             {% if curr_user_dash[venue]|length == 0 %}
                 <h4>No Show Found!!!</h4>
             {% else %}

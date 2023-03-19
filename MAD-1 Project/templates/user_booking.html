@@ -20,9 +20,9 @@
         {% for booking in user_bookings_to_disp %}
             <div>Show Name: {{booking[0]}}</div>
             <p>Show Timing: {{booking[1]}}</p>
-            <p>Show Venue: {{booking[2]}}</p>
-            <p>Show Place: {{booking[3]}}</p>
-            <p>Show Location: {{booking[4]}}</p>
+            <p>Venue Name: {{booking[2]}}</p>
+            <p>Venue Address: {{booking[3]}}</p>
+            <p>Venue City: {{booking[4]}}</p>
             <br>
         {% endfor %}
     {% endif %}
