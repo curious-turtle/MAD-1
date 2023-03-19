@@ -24,14 +24,15 @@
     {% if curr_user_dash|length == 0 %}
         <h4>No Show Found!!!</h4>
     {% else %}
-        {% for venue in curr_user_dash %}
-            <p>Venue Name: {{venue}}</p>
-            <p>Venue Address: {{venue_address}}</p>
-            <p>Venue City: {{venue_city}}</p>
-            {% if curr_user_dash[venue]|length == 0 %}
-                <h4>No Show Found!!!</h4>
-            {% else %}
-                <table id="show-bookings">
+        {% for venue_detail in curr_user_dash %}
+            {% for venue in venue_detail %}
+                <p>Venue Name: {{venue[1]}}</p>
+                <p>Venue Address: {{venue[2]}}</p>
+                <p>Venue City: {{venue[3]}}</p>
+                {% if venue_detail[venue]|length == 0 %}
+                    <h4>No Show Found!!!</h4>
+                {% else %}
+                    <table id="show-bookings">
                         <tr>
                             <th>Show Name</th>
                             <th>Show Rating</th>
@@ -40,20 +41,19 @@
                             <th>Ticket Price</th>
                             <th>Book Now</th>
                         </tr>
-                    {% for show in curr_user_dash[venue] %}
-                        {% for sd in show_details[show] %}
+                    {% for show in venue_detail[venue] %}
                             <tr>
-                                <td>{{ show }}</td>
-                                <td>{{ sd[0] }}</td>
-                                <td>{{ sd[1] }}</td>
-                                <td>{{ sd[2] }}</td>
-                                <td>{{ sd[3] }}</td>
-                                <td><a href="/user/{{user_id}}/create_booking/{{venue_name_id_pair[venue]}}/{{show_name_id_pair[show]}}">Create Booking</a></td>
+                                <td>{{ show[0] }}</td>
+                                <td>{{ show[1] }}</td>
+                                <td>{{ show[2] }}</td>
+                                <td>{{ show[3] }}</td>
+                                <td>{{ show[4] }}</td>
+                                <td><a href="/user/{{user_id}}/create_booking/{{venue[0]}}/{{show[5]}}">Create Booking</a></td>
                             </tr>
-                        {% endfor %}
                     {% endfor %}     
-                </table>
-            {% endif %}
+                    </table>
+                {% endif %}
+            {% endfor %}
         {% endfor %}
     {% endif %}
     <div>

@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        table,th,tr,td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            text-align: center;
+        }    
+    </style> 
     <title>Admin Dashboard</title>
 </head>
 <body>
@@ -15,28 +22,45 @@
     <br><br><br>
     
     {% if curr_admin_dash|length == 0 %}
-        <h4>No venue Found. Add venue now!</h4>
-    {% else %}
-        {% for venue in curr_admin_dash %}
-            <p>Venue Name: {{venue}}</p>
-            {% if curr_admin_dash[venue]|length == 0 %}
+    <h4>No venue Found. Add venue now!</h4>
+{% else %}
+    {% for venue_detail in curr_admin_dash %}
+        {% for venue in venue_detail %}
+            <p>Venue Name: {{venue[1]}}</p>
+            <p>Venue Address: {{venue[2]}}</p>
+            <p>Venue City: {{venue[3]}}</p>
+            {% if venue_detail[venue]|length == 0 %}
                 <h4>No Show Found. Add Show now!</h4>
             {% else %}
-                <table>
-                    {% for show in curr_admin_dash[venue] %}
+                <table id="show-bookings">
+                    <tr>
+                        <th>Show Name</th>
+                        <th>Show Rating</th>
+                        <th>Show Timing</th>
+                        <th>Show Tags</th>
+                        <th>Ticket Price</th>
+                        <th>Update Show</th>
+                        <th>Delete Show</th>
+                    </tr>
+                {% for show in venue_detail[venue] %}
                         <tr>
-                            <td>{{ show }}</td>
-                            <td><a href="/admin/{{show_name_id_pair[show]}}/update_show">Update Show</a></td>
-                            <td><a href="/admin/{{show_name_id_pair[show]}}/delete_show">Delete Show</a></td>
+                            <td>{{ show[0] }}</td>
+                            <td>{{ show[1] }}</td>
+                            <td>{{ show[2] }}</td>
+                            <td>{{ show[3] }}</td>
+                            <td>{{ show[4] }}</td>
+                            <td><a href="/admin/{{show[5]}}/update_show">Update Show</a></td>
+                            <td><a href="/admin/{{show[5]}}/delete_show">Delete Show</a></td>
                         </tr>
-                    {% endfor %}     
+                {% endfor %}     
                 </table>
             {% endif %}
-            <a href="/admin/{{venue_name_id_pair[venue]}}/add_show">Add Show</a>
-            <a href="/admin/{{venue_name_id_pair[venue]}}/update_venue">Update Venue</a>
-            <a href="/admin/{{venue_name_id_pair[venue]}}/delete_venue">Delete Venue</a>
+            <a href="/admin/{{venue[0]}}/add_show">Add Show</a>
+            <a href="/admin/{{venue[0]}}/update_venue">Update Venue</a>
+            <a href="/admin/{{venue[0]}}/delete_venue">Delete Venue</a>
         {% endfor %}
-    {% endif %}
+    {% endfor %}
+{% endif %}
     <div>
         <a href="/admin/create_venue">Create Venue</a>
     </div>

@@ -25,6 +25,7 @@ class Show(db.Model):
     show_timing=db.Column(db.String)
     show_tags=db.Column(db.String)
     show_ticket_price=db.Column(db.Integer)
+    show_capacity=db.Column(db.Integer)
     show_tickets_sold=db.Column(db.Integer)
     show_collection=db.Column(db.Integer)
     show_bookings=db.relationship("User",secondary="bookings")    #define this relation with venue also see some yt video for ref
@@ -87,8 +88,7 @@ def user_signup():
 
 @app.route("/user_dashboard/<int:user_id>", methods=["GET"])
 def user_dashboard(user_id):
-    curr_user_dash,show_details={},{}
-    venue_name_id_pair,show_name_id_pair={},{}
+    curr_user_dash=[]
     all_venues=Venue.query.all()
     user_name=User.query.filter_by(user_id=user_id).first()
     user_name=user_name.user_name
@@ -96,26 +96,24 @@ def user_dashboard(user_id):
     for venu in all_venues:
         venue_id,v_name=venu.venue_id,venu.venue_name
         venue_address,venue_city=venu.venue_address,venu.venue_city
-        #print(v_name)
-        venue_name_id_pair[v_name]=venue_id
-        if v_name not in curr_user_dash:
-                curr_user_dash[v_name]=[]
         all_shows=Reservation.query.filter_by(rvenue_id=venue_id).all()
+        #print(v_name)
+        curr_venue_detail={}
+        curr_venue_detail[(venue_id,v_name,venue_address,venue_city)]=[]
         for show in all_shows:
             show_id=show.rshow_id
-            s_name=Show.query.filter_by(show_id=show_id).first()
-            curr_user_dash[v_name].append(s_name.show_name)
-            show_name_id_pair[s_name.show_name]=show_id
-            if s_name.show_name not in show_details:
-                show_details[s_name.show_name]=[]
-            show_details[s_name.show_name].append([s_name.show_rating,s_name.show_timing,
-                                                   s_name.show_tags,s_name.show_ticket_price])
+            curr_show=Show.query.filter_by(show_id=show_id).first()
+            curr_venue_detail[(venue_id,v_name,venue_address,venue_city)].append([curr_show.show_name,
+                                                                                  curr_show.show_rating,
+                                                                                  curr_show.show_timing,
+                                                                                  curr_show.show_tags,
+                                                                                  curr_show.show_ticket_price,
+                                                                                  show_id
+                                                                                  ])
+        curr_user_dash.append(curr_venue_detail)
     #print(curr_user_dash)
-    return render_template('user_dashboard.html',curr_user_dash=curr_user_dash,user_name=user_name,
-                           venue_address=venue_address,venue_city=venue_city,
-                           user_id=user_id,show_details=show_details,
-                           venue_name_id_pair=venue_name_id_pair,
-                           show_name_id_pair=show_name_id_pair)
+    return render_template('user_dashboard.html',curr_user_dash=curr_user_dash,
+                           user_name=user_name,user_id=user_id)
 
 @app.route("/user/<int:user_id>/create_booking/<int:venue_id>/<int:show_id>", methods=["GET","POST"])
 def create_booking(user_id,venue_id,show_id):
@@ -123,7 +121,7 @@ def create_booking(user_id,venue_id,show_id):
         user_name=User.query.filter_by(user_id=user_id).first()
         venue_to_disp=Venue.query.filter_by(venue_id=venue_id).first()
         show_to_disp=Show.query.filter_by(show_id=show_id).first()
-        available_seats=venue_to_disp.venue_capacity
+        available_seats=show_to_disp.show_capacity
         address=venue_to_disp.venue_address
         city=venue_to_disp.venue_city
         timing=show_to_disp.show_timing
@@ -136,13 +134,32 @@ def create_booking(user_id,venue_id,show_id):
                                venue_id=venue_id,show_id=show_id,user_id=user_id)
     if request.method == 'POST':
         b_number=request.form.get('b_number')
-        venue_to_update=Venue.query.filter_by(venue_id=venue_id).first()
-        venue_to_update.venue_capacity=venue_to_update.venue_capacity-int(b_number)
-        db.session.commit()
-        b1=Bookings(buser_id=user_id,bvenue_id=venue_id,bshow_id=show_id)
-        db.session.add(b1)
-        db.session.commit()
-        return redirect(f'/user_dashboard/{user_id}')
+        user_name=User.query.filter_by(user_id=user_id).first()
+        venue_to_disp=Venue.query.filter_by(venue_id=venue_id).first()
+        show_to_disp=Show.query.filter_by(show_id=show_id).first()
+        available_seats=show_to_disp.show_capacity
+        address=venue_to_disp.venue_address
+        city=venue_to_disp.venue_city
+        timing=show_to_disp.show_timing
+        ticket_price=show_to_disp.show_ticket_price
+        show_name=show_to_disp.show_name
+        user_name=user_name.user_name
+        if int(b_number)>available_seats:
+            return render_template('create_booking.html',user_name=user_name,show_name=show_name,
+                               available_seats=available_seats,address=address,
+                               city=city,timing=timing,ticket_price=ticket_price,
+                               venue_id=venue_id,show_id=show_id,user_id=user_id,
+                               message="Sorry not enough tickets available please try again")
+        else:
+            show_to_update=Show.query.filter_by(show_id=show_id).first()
+            show_to_update.show_capacity=show_to_update.show_capacity-int(b_number)
+            show_to_update.show_tickets_sold+=int(b_number)
+            show_to_update.show_collection+=(int(b_number)*show_to_update.show_ticket_price)
+            db.session.commit()
+            b1=Bookings(buser_id=user_id,bvenue_id=venue_id,bshow_id=show_id)
+            db.session.add(b1)
+            db.session.commit()
+            return redirect(f'/user_dashboard/{user_id}')
 
 @app.route("/user/<int:user_id>/user_bookings", methods=["GET"])
 def user_bookings(user_id):
@@ -179,26 +196,28 @@ def admin_login():
 
 @app.route("/admin_dashboard", methods=["GET"])
 def admin_dashboard():
-    curr_admin_dash,venue_name_id_pair,show_name_id_pair={},{},{}
+    curr_admin_dash=[]
     all_venues=Venue.query.all()
-    #print(all_venues)
     for venu in all_venues:
-        venue_id=venu.venue_id
-        v_name=venu.venue_name
-        #print(v_name)
-        venue_name_id_pair[v_name]=venue_id
-        if v_name not in curr_admin_dash:
-                curr_admin_dash[v_name]=[]
+        venue_id,v_name=venu.venue_id,venu.venue_name
+        venue_address,venue_city=venu.venue_address,venu.venue_city
         all_shows=Reservation.query.filter_by(rvenue_id=venue_id).all()
+        curr_venue_detail={}
+        curr_venue_detail[(venue_id,v_name,venue_address,venue_city)]=[]
         for show in all_shows:
             show_id=show.rshow_id
             s_name=Show.query.filter_by(show_id=show_id).first()
-            curr_admin_dash[v_name].append(s_name.show_name)
-            show_name_id_pair[s_name.show_name]=show_id
+            curr_show=Show.query.filter_by(show_id=show_id).first()
+            curr_venue_detail[(venue_id,v_name,venue_address,venue_city)].append([curr_show.show_name,
+                                                                                  curr_show.show_rating,
+                                                                                  curr_show.show_timing,
+                                                                                  curr_show.show_tags,
+                                                                                  curr_show.show_ticket_price,
+                                                                                  show_id
+                                                                                  ])
+        curr_admin_dash.append(curr_venue_detail)
     #print(curr_admin_dash)
-    return render_template('admin_dashboard.html',curr_admin_dash=curr_admin_dash,
-                           venue_name_id_pair=venue_name_id_pair,
-                           show_name_id_pair=show_name_id_pair)
+    return render_template('admin_dashboard.html',curr_admin_dash=curr_admin_dash)
 
 @app.route("/admin/create_venue", methods=["GET","POST"])
 def admin_create_venue():
@@ -255,9 +274,11 @@ def admin_add_show(venue_id):
         s_timing=request.form.get('s_timing')
         s_tags=request.form.get('s_tags')
         s_price=request.form.get('s_price')
+        s_capacity=(Venue.query.filter_by(venue_id=venue_id).first()).venue_capacity
         s1 = Show(show_name=s_name,show_rating=s_rating,
                   show_timing=s_timing,show_tags=s_tags,
-                  show_ticket_price=s_price)
+                  show_ticket_price=s_price,show_tickets_sold=0,
+                  show_capacity=s_capacity,show_collection=0)
         db.session.add(s1)
         try:
             db.session.commit()
@@ -284,7 +305,7 @@ def admin_update_show(show_id):
                                show_id=show_id)
     if request.method == 'POST':
         show_to_update=Show.query.filter_by(show_id=show_id).first()
-        show_to_update.show_rating=request.form.get('s_rating')
+        show_to_update.show_rating=request.form.get('s_rating')    
         show_to_update.show_timing=request.form.get('s_timing')
         show_to_update.show_tags=request.form.get('s_tags')
         show_to_update.show_ticket_price=request.form.get('s_price')
