@@ -4,65 +4,87 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        table,th,tr,td {
-            border: 1px solid black;
-            border-collapse: collapse;
-            text-align: center;
-        }    
-    </style> 
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css' ) }}">
+     
     <title>Admin Dashboard</title>
 </head>
 <body>
 
-    <div style="position: relative; width: 100%;">
-        <h1 style="position: absolute; left: 0; top: 0; margin: 0;">Venues</h1>
+    <div>
+        <h2 style="position: absolute; left: 45%; top: 0; margin: 0;">Venues</h2>
     </div>
 
-    <br><br><br>
-    
-    {% if curr_admin_dash|length == 0 %}
-    <h4>No venue Found. Add venue now!</h4>
-{% else %}
-    {% for venue_detail in curr_admin_dash %}
-        {% for venue in venue_detail %}
-            <p>Venue Name: {{venue[1]}}</p>
-            <p>Venue Address: {{venue[2]}}</p>
-            <p>Venue City: {{venue[3]}}</p>
-            {% if venue_detail[venue]|length == 0 %}
-                <h4>No Show Found. Add Show now!</h4>
-            {% else %}
-                <table id="show-bookings">
-                    <tr>
-                        <th>Show Name</th>
-                        <th>Show Rating</th>
-                        <th>Show Timing</th>
-                        <th>Show Tags</th>
-                        <th>Ticket Price</th>
-                        <th>Update Show</th>
-                        <th>Delete Show</th>
-                    </tr>
-                {% for show in venue_detail[venue] %}
-                        <tr>
-                            <td>{{ show[0] }}</td>
-                            <td>{{ show[1] }}</td>
-                            <td>{{ show[2] }}</td>
-                            <td>{{ show[3] }}</td>
-                            <td>{{ show[4] }}</td>
-                            <td><a href="/admin/{{show[5]}}/update_show">Update Show</a></td>
-                            <td><a href="/admin/{{show[5]}}/delete_show">Delete Show</a></td>
-                        </tr>
-                {% endfor %}     
-                </table>
-            {% endif %}
-            <a href="/admin/{{venue[0]}}/add_show">Add Show</a>
-            <a href="/admin/{{venue[0]}}/update_venue">Update Venue</a>
-            <a href="/admin/{{venue[0]}}/delete_venue">Delete Venue</a>
-        {% endfor %}
-    {% endfor %}
-{% endif %}
-    <div>
-        <a href="/admin/create_venue">Create Venue</a>
+    <div class="pt-2" style="position: absolute; top: 0; left: 80%; margin: 0;">
+        <a href="/admin/generate_report" class="btn btn-warning">Generate Report</a>
     </div>
+
+    {% if curr_admin_dash|length == 0 %}
+    <div class="container vertical-center" style="width: 100%">
+        <div class="horizontal-center text-center pt-5">
+            <h4>No venue Found. Add venue now!</h4>
+        </div>
+    </div>    
+    {% else %}
+    
+    <div class="container">
+        <div style="padding-top: 60px;" class="row">
+            {% for venue_detail in curr_admin_dash %}
+                {% for venue in venue_detail %}
+                    <div class="col-12 pb-5">
+                        <div class="card text-center border-dark">
+                            <div class="card-header border-dark">
+                                <div><h5><b>Venue Name: {{venue[1]}}</b></h5></div>
+                                <div>Venue Address: {{venue[2]}}</div>
+                                <div>Venue City: {{venue[3]}}</div>
+                            </div>
+                            <div class="card-body">
+                                {% if venue_detail[venue]|length == 0 %}
+                                    <h6>No Show Found. Add Show now!</h6>
+                                {% else %}
+                                    <table class="table" id="show-bookings">
+                                        <tr>
+                                            <th>Show Name</th>
+                                            <th>Show Rating</th>
+                                            <th>Show Timing</th>
+                                            <th>Show Tags</th>
+                                            <th>Ticket Price</th>
+                                            <th>Update Show</th>
+                                            <th>Delete Show</th>
+                                        </tr>
+                                    {% for show in venue_detail[venue] %}
+                                            <tr>
+                                                <td>{{ show[0] }}</td>
+                                                <td>{{ show[1] }}</td>
+                                                <td>{{ show[2] }}</td>
+                                                <td>{{ show[3] }}</td>
+                                                <td>{{ show[4] }}</td>
+                                                <td><a class="btn btn-primary" href="/admin/{{show[5]}}/update_show">Update Show</a></td>
+                                                <td><a class="btn btn-danger" href="/admin/{{show[5]}}/delete_show">Delete Show</a></td>
+                                            </tr>
+                                    {% endfor %}     
+                                    </table>
+                                {% endif %}
+                                
+                            </div>
+                            <div class="card-footer text-muted border-dark">
+                                <a href="/admin/{{venue[0]}}/add_show" class="btn btn-success">Add Show</a>
+                                <a href="/admin/{{venue[0]}}/update_venue" class="btn btn-primary">Update Venue</a>
+                                <a href="/admin/{{venue[0]}}/delete_venue" class="btn btn-danger">Delete Venue</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+        </div>
+    </div>
+    {%endif%}
+    
+    
+    <div class="container vertical-center" style="width: 100%">
+        <div class="horizontal-center text-center pb-5">
+            <a href="/admin/create_venue" class="btn btn-success">Create Venue</a>
+        </div>
+    </div>    
+
 </body>
 </html>

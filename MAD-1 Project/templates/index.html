@@ -3,25 +3,45 @@
   <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css' ) }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+      }
+
+      .horizontal-center {
+        margin-right: auto;
+        margin-left: auto;
+      }
+    </style>
     <title>Ticket Show</title>
   </head>
 
   <body>
-  
-    <div class="index_heading">
-      <h2>Welcome to Ticket Booking App</h2>
-    </div>
+    <div class="container">
+
+      <div class="container vertical-center" style="width: 100%">
+        <div class="horizontal-center text-center">
+        <h2>Welcome to Ticket Booking App</h2>
+        <div class="btn">
+          <a class="btn btn-primary btn-md" href="/user_login">Login</a>
+          <a class="btn btn-primary btn-md" href="/user_signup">Signup</a>
+        </div>
+        
+        <div class="admin-login">
+          <a class="btn btn-success btn-md" href="/admin_login">Admin Login</a>
+        </div>
+        </div>
+      </div>
+      </div>
+
+        
     
-    <div class="btn">
-      <a href="/user_login">Login</a>
-      <a href="/user_signup">Signup</a>
-    </div>
-    
-    <div class="admin-login">
-      <a href="/admin_login">Admin Login</a>
-    </div>
   
   </body>
 </html>

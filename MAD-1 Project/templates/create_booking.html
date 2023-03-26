@@ -4,39 +4,73 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css' ) }}">
     <title>{{user_name}}'s Booking Window</title>
 </head>
 <body>
-    <p>Booking for {{show_name}}</p>
     {% if available_seats== 0 %}
-        <h4>Sorry show is housefull!!!</h4>
-        <a href="/user_dashboard/{{user_id}}">Back to Dashboard</a>
+    <div class="container">
+        <div style="padding-top: 100px;">
+            <div class="container vertical-center" style="width: 100%">
+                <div class="horizontal-center text-center">
+                    <h4>Booking for {{show_name}}</h4>
+                    <h4>Sorry show is housefull!!!</h4>
+                    <a href="/user_dashboard/{{user_id}}">Back to Dashboard</a>
+                </div>
+            </div>
+        </div>
+    </div>    
     {%else%}
-        <form action="/user/{{user_id}}/create_booking/{{venue_id}}/{{show_id}}" method="POST" id="user-booking">
-            <div>
-                {{message}}<br>
-                available seats: {{available_seats}} <br>
-                Address: {{address}} <br>
-                City: {{city}} <br>
-                Timing: {{timing}} <br>
-            </div>
-            
-            <div>
-                <label>Number:</label> 
-                <input type="text" name="b_number" min="1" max="100" required />
-            </div>
+        <div class="container">
+            <div style="padding-top: 100px;">
+                <div class="container vertical-center" style="width: 100%">
+                    <div class="horizontal-center text-center">
+                        <h4>Booking for {{show_name}}</h4>
+                        <form action="/user/{{user_id}}/create_booking/{{venue_id}}/{{show_id}}" method="POST" id="user-booking">
+                                                        
+                            <div class="row">
+                                <div class="col-5 text-right"><label>Available Seats:</label></div>
+                                <div class="col-5 text-left"><label>{{available_seats}}</label></div>
+                            </div>
+        
+                            <div class="row">
+                                <div class="col-5 text-right"><label>Address:</label></div>
+                                <div class="col-5 text-left"><label>{{address}}</label></div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-5 text-right"><label>City:</label></div>
+                                <div class="col-5 text-left"><label>{{city}}</label></div>
+                            </div>
+        
+                            <div class="row">
+                                <div class="col-5 text-right"><label>Timing:</label></div>
+                                <div class="col-5 text-left"><label>{{timing}}</label></div>
+                            </div>
+        
+                            <div class="row">
+                                <div class="col-5 text-right"><label>Number of Tickets:</label></div>
+                                <div class="col-5 text-left"><input type="text" name="b_number" min="1" max="100" required/></div>
+                            </div>
+        
+                            <div class="row">
+                                <div class="col-5 text-right"><label>Price:</label></div>
+                                <div class="col-5 text-left"><input type="text" name="b_number" value={{ticket_price}} disabled/></div>
+                            </div>
 
-            <div>
-                <label>Price:</label>
-                <input type="text" name="b_price" value={{ticket_price}} disabled />
+                            <div class="row pt-4">
+                                <div class="col-5 text-right"></div>
+                                <div class="col-5 text-left"><label>{{message}}</label></div>
+                            </div>
+        
+                            <div class="pt-2">
+                                <button class="btn btn-success btn-md" type="submit">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
-            
-            <br>
-
-            <div>
-                <input type="submit" value = "Confirm Booking">
-            </div>
-        </form>
+        </div>
     {% endif %}            
 </body>
 </html>

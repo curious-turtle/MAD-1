@@ -4,35 +4,44 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Venue</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css' ) }}">
+    <title>Update Venue</title>
 </head>
 <body>
-    <p>Create new venue</p>
-    <form action="/admin/{{venue_id}}/update_venue" method="POST" id="admin_update_venue">
-        <div>
-            <label>Venue Name:</label>
-            <input type="text" name=v_name value="{{v_name}}" disabled />
+    <div class="container">
+        <div style="padding-top: 100px;">
+            <div class="container vertical-center" style="width: 100%">
+                <div class="horizontal-center text-center">
+                    <h5 class="pb-3">Update Venue</h5>
+                    <form action="/admin/{{venue_id}}/update_venue" method="POST" id="admin_update_venue">
+                        <div class="row">
+                            <div class="col-5 text-right"><label>Venue Name:</label></div>
+                            <div class="col-5 text-left"><input type="text" name="v_name" value="{{v_name}}" disabled /></div>
+                        </div>
+    
+                        <div class="row">
+                            <div class="col-5 text-right"><label>Venue Address:</label></div>
+                            <div class="col-5 text-left"><input type="text" name="v_address" value="{{v_address}}" disabled /></div>
+                        </div>                    
+                        
+                        <div class="row">
+                            <div class="col-5 text-right"><label>Venue City:</label></div>
+                            <div class="col-5 text-left"><input type="text" name="v_city" value="{{v_city}}" disabled /></div>
+                        </div>                    
+                        
+                        <div class="row">
+                            <div class="col-5 text-right"><label>Venue Capacity:</label></div>
+                            <div class="col-5 text-left"><input type="number" name="v_capacity" min="100" max="1000" required/></div>
+                        </div>
+                        
+                        <div class="pt-3">
+                            <button class="btn btn-success btn-md" type="submit">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
-
-        <div>
-            <label>Venue Address:</label>
-            <input type="text" name=v_place value="{{v_address}}" disabled />
-        </div>
-
-        <div>
-            <label>Venue City:</label>
-            <input type="text" name=v_location value="{{v_city}}" disabled/>
-        </div>
-
-        <div>
-            <label>Venue Capacity:</label>
-            <input type="number" name="v_capacity" min="10" max="1000"/>
-        </div>
-        
-        <div>
-            <input type="submit" value = "Submit">
-        </div>
-    </form>            
+    </div>
 </body>
 </html>
 

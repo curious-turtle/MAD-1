@@ -1,43 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Venue</title>
-</head>
-<body>
-    <p>Create a new show</p>
-    <form action="/admin/{{venue_id}}/add_show" method="POST" id="admin_add_show">
-        <div>
-            <label>Show Name:</label>
-            <input type="text" name="s_name" required />
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css' ) }}">
+        <title>Create Venue</title>
+    </head>
+    <body>
+        <div class="container">
+            <div style="padding-top: 100px;">
+                <div class="container vertical-center" style="width: 100%">
+                <div class="horizontal-center text-center">
+                        <h5 class="pb-3">Create a new show</h5>
+                        <form action="/admin/{{venue_id}}/add_show" method="POST" id="admin_add_show">
+                            <div class="row pb-1">
+                                <div class="col-5 text-right"><label>Show Name:</label></div>
+                                <div class="col-5 text-left"><input type="text" name="s_name" required /></div>
+                            </div>                   
+                            
+                            <div class="row">
+                                <div class="col-5 text-right"><label>Timing:</label></div>
+                                <div class="col-5 text-left"><input type="text" name="s_timing" required /></div>
+                            </div>
+    
+                            <div class="row">
+                                <div class="col-5 text-right"><label>Tags:</label></div>
+                                <div class="col-5 text-left"><input type="text" name="s_tags" required /></div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-5 text-right"><label>Price:</label></div>
+                                <div class="col-5 text-left"><input type="number" name="s_price" min="10" max="1000" required/></div>
+                            </div>
+                            <div class="pt-3">
+                                <button class="btn btn-success btn-md" type="submit">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
-
-        <div>
-            <label>Rating:</label>
-            <input type="text" name="s_rating" required />
-        </div>
-
-        <div>
-            <label>Timing:</label>
-            <input type="text" name="s_timing" />
-        </div>
-
-        <div>
-            <label>Tags:</label>
-            <input type="text" name="s_tags"/>
-        </div>
-
-        <div>
-            <label>Price:</label>
-            <input type="number" name="s_price"/>
-        </div>
-        
-        <div>
-            <input type="submit" value = "Submit">
-        </div>
-    </form>            
-</body>
+    
+    </body>
 </html>
-

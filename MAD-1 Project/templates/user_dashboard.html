@@ -4,60 +4,84 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css' ) }}">
     <title>{{user_name}}'s Dashboard</title>
-    <style>
-        table,th,tr,td {
-            border: 1px solid black;
-            border-collapse: collapse;
-            text-align: center;
-        }    
-    </style>
 </head>
 <body>
 
-    <div style="position: relative; width: 100%;">
-        <h1 style="position: absolute; left: 0; top: 0; margin: 0;">Shows</h1>
+    <div>
+        <h2 style="position: absolute; left: 46%; top: 0; margin: 0;">Shows</h2>
     </div>
 
-    <br><br><br>
-    
-    {% if curr_user_dash|length == 0 %}
-        <h4>No Show Found!!!</h4>
-    {% else %}
-        {% for venue_detail in curr_user_dash %}
-            {% for venue in venue_detail %}
-                <p>Venue Name: {{venue[1]}}</p>
-                <p>Venue Address: {{venue[2]}}</p>
-                <p>Venue City: {{venue[3]}}</p>
-                {% if venue_detail[venue]|length == 0 %}
-                    <h4>No Show Found!!!</h4>
-                {% else %}
-                    <table id="show-bookings">
-                        <tr>
-                            <th>Show Name</th>
-                            <th>Show Rating</th>
-                            <th>Show Timing</th>
-                            <th>Show Tags</th>
-                            <th>Ticket Price</th>
-                            <th>Book Now</th>
-                        </tr>
-                    {% for show in venue_detail[venue] %}
-                            <tr>
-                                <td>{{ show[0] }}</td>
-                                <td>{{ show[1] }}</td>
-                                <td>{{ show[2] }}</td>
-                                <td>{{ show[3] }}</td>
-                                <td>{{ show[4] }}</td>
-                                <td><a href="/user/{{user_id}}/create_booking/{{venue[0]}}/{{show[5]}}">Create Booking</a></td>
-                            </tr>
-                    {% endfor %}     
-                    </table>
-                {% endif %}
-            {% endfor %}
-        {% endfor %}
-    {% endif %}
-    <div>
-        <a href="/user/{{user_id}}/user_bookings">User Bookings</a>
+    <div class="pt-2" style="position: absolute; top: 0; left: 80%; margin: 0;">
+        <a href="/user/{{user_id}}/user_bookings" class="btn btn-warning">Your Bookings</a>
     </div>
+    <form action="/user_dashboard/{{user_id}}" method="POST" id="user_dashboard">
+        <div class="container">
+            <div class="pt-3" style="position: absolute; left: 5%; top: 0; margin: 0;">
+                <label for="tags">Search by tag: </label>
+                <select name="tags" id="tags">
+                    {% for show_tag in search_by_tag %}
+                        <option value="{{ show_tag }}">{{ show_tag }}</option>
+                    {% endfor %}
+                </select>
+                <span class="pl-2">
+                    <button class="btn btn-primary btn-md" style="left: 2%" type="submit">Search</button>
+                </span>
+            </div>
+        </div>
+    </form>
+
+    {% if curr_user_dash|length == 0 %}
+        <div class="container vertical-center" style="width: 100%">
+            <div class="horizontal-center text-center pt-5">
+                <h4>No Show Found!!!</h4>
+            </div>
+        </div>    
+    {% else %}
+        <div class="container">
+            <div style="padding-top: 60px;" class="row">
+                {% for venue_detail in curr_user_dash %}
+                    {% for venue in venue_detail %}
+                    <div class="col-12 pb-5">
+                        <div class="card text-center border-dark">
+                            <div class="card-header border-dark">
+                                <div><h5><b>Venue Name: {{venue[1]}}</b></h5></div>
+                                <div>Venue Address: {{venue[2]}}</div>
+                                <div>Venue City: {{venue[3]}}</div>
+                            </div>
+                            <div class="card-body">
+                                {% if venue_detail[venue]|length == 0 %}
+                                    <h6>No Show Found!!!</h6>
+                                {% else %}
+                                    <table class="table" id="show-bookings">
+                                        <tr>
+                                            <th>Show Name</th>
+                                            <th>Show Rating</th>
+                                            <th>Show Timing</th>
+                                            <th>Show Tags</th>
+                                            <th>Ticket Price</th>
+                                            <th>Book Now</th>
+                                        </tr>
+                                    {% for show in venue_detail[venue] %}
+                                            <tr>
+                                                <td>{{ show[0] }}</td>
+                                                <td>{{ show[1] }}</td>
+                                                <td>{{ show[2] }}</td>
+                                                <td>{{ show[3] }}</td>
+                                                <td>{{ show[4] }}</td>
+                                                <td><a class="btn btn-primary" href="/user/{{user_id}}/create_booking/{{venue[0]}}/{{show[5]}}">Book Now</a></td>
+                                            </tr>
+                                    {% endfor %}     
+                                    </table>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {%endfor%}
+                {%endfor%}
+             </div>
+        </div>
+    {% endif %}
 </body>
 </html>
